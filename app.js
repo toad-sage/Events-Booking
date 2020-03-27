@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const graphQlSchema = require('./graphql/schema/index');
 const graphQlResolvers = require('./graphql/resolvers/index');
+const isAuth = require('./middleware/is-auth');
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(bodyParser.json());
 // in graphqlHTTP we pass options which tells express-graphql where are our 
 //schemas and where are resolvers
 //schema will have schemas and rootValue will have resolvers
+
+app.use(isAuth);
 
 app.use('/graphql',graphqlHTTP({
     // schema keyword is necessary in schema key
