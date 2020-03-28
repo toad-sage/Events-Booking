@@ -1,28 +1,34 @@
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 
+import AuthContext from '../../context/auth-context'
 import './MainNavigation.css';
 
-const mainNavigation = props => (
-  <header className="main-navigation">
-    <div className="main-navigation__logo">
-      <h1>EasyEvent</h1>
-    </div>
-    <nav className="main-navigation__items">
-      <ul>
-        <li>
-          <NavLink to="/auth">Authenticate</NavLink>
-        </li>
-        <li>
-          <NavLink to="/events">Events</NavLink>
-        </li>
-        <li>
-          <NavLink to="/bookings">Bookings</NavLink>
-        </li>
-      </ul>
-    </nav>
-  </header>
-);
 
-export default mainNavigation;
+function MainNavigation() {
+  const loginContext = useContext(AuthContext);
+  console.log(loginContext.token)
+   return (
+    <header className="main-navigation">
+      <div className="main-navigation__logo">
+        <h1>EasyEvent</h1>
+      </div>
+      <nav className="main-navigation__items">
+        <ul>
+          { !loginContext.token && (<li>
+            <NavLink to="/auth">Authenticate</NavLink>
+          </li>)}
+          <li>
+            <NavLink to="/events">Events</NavLink>
+          </li>
+          { loginContext.token && (<li>
+            <NavLink to="/bookings">Bookings</NavLink>
+          </li>)}
+        </ul>
+      </nav>
+    </header>
+  );
+}
+
+export default MainNavigation;
