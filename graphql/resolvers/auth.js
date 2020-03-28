@@ -1,6 +1,7 @@
+const { events } = require('./merge')
+
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-
 const User = require('../../models/user');
 
 module.exports = {

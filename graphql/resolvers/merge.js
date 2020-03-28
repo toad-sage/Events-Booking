@@ -55,5 +55,6 @@ const transformBooking = booking => {
     }
 }
 
+exports.events = events
 exports.transformEvent = transformEvent
 exports.transformBooking = transformBooking

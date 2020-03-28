@@ -12,6 +12,17 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// for cross origin refernce
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+    }
+    next();
+  });
+
 //in graphql we only haEventve one mai endpoint
 // in graphqlHTTP we pass options which tells express-graphql where are our 
 //schemas and where are resolvers
@@ -35,6 +46,6 @@ app.use('/graphql',graphqlHTTP({
 mongoose
     .connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-fw7ue.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`,{useUnifiedTopology: true,useNewUrlParser: true } )
     .then(() => {
-       app.listen(3000,()=>console.log(`listening on port 3000`));
+       app.listen(8000,()=>console.log(`listening on port 8000`));
     })
     .catch((err) => console.log(err));
