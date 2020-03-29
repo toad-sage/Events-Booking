@@ -22,9 +22,16 @@ function MainNavigation() {
           <li>
             <NavLink to="/events">Events</NavLink>
           </li>
-          { loginContext.token && (<li>
-            <NavLink to="/bookings">Bookings</NavLink>
-          </li>)}
+          { loginContext.token && (
+            <React.Fragment>
+              <li>
+              <NavLink to="/bookings">Bookings</NavLink>
+              </li>
+              <li>
+                <button onClick={loginContext.logout}>Logout</button>
+              </li>
+            </React.Fragment>
+          )}
         </ul>
       </nav>
     </header>
