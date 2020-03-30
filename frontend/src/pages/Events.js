@@ -177,6 +177,8 @@ class EventsPage extends Component {
           return;
         }
 
+        console.table(this.state.selectedEvent)
+
           const requestBody = {
             query: `
               mutation BookEvent($id: ID!){
