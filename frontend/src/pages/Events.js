@@ -25,6 +25,8 @@ class EventsPage extends Component {
         this.descriptionElRef = React.createRef();
     }
 
+    isActive = true;
+
     static contextType = AuthContext;
 
     startCreateEventHandler = () => {
@@ -149,10 +151,12 @@ class EventsPage extends Component {
           })
           .then(resData => {
               const events = resData.data.events;
+              if(this.isActive)
               this.setState({ events: events , isLoading: false });
           })
           .catch(err => {
             console.log(err);
+            if(this.isActive)
             this.setState({isLoading:false})
           });
       }
@@ -166,6 +170,50 @@ class EventsPage extends Component {
 
       bookEventHandler = () => {
 
+        if (!this.context.token) {
+          this.setState({ selectedEvent: null });
+          return;
+        }
+
+          const requestBody = {
+            query: `
+              mutation {
+                bookEvent(eventId: "${this.state.selectedEvent._id}"){
+                  _id
+                  createdAt
+                  updatedAt
+                }
+              }
+            `
+          }
+
+          console.log(requestBody.query)
+          fetch('http://localhost:8000/graphql', {
+          method: 'POST',
+          body: JSON.stringify(requestBody),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization' : 'Bearer ' + this.context.token
+          }
+          })
+          .then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+              throw new Error('Failed!');
+            }
+            return res.json();
+          })
+          .then(resData => {
+            console.log(resData)
+            if(this.isActive)
+            this.setState({selectedEvent: null})
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+
+      componentWillMount(){
+        this.isActive = false;
       }
 
     render() {
@@ -210,15 +258,16 @@ class EventsPage extends Component {
                  </form>
                 </Modal>
                 )}
+                  {/* {console.log(this.state.selectedEvent)} */}
 
                 {this.state.selectedEvent && (
                   <Modal
                     title={this.state.selectedEvent.title}
                     canCancel
-                    canConfirm
+                    canConfirm={this.context.token ? true : false}
                     onCancel={this.modalCancelHandler}
                     onConfirm={this.bookEventHandler}
-                    confirmText="Book"
+                    confirmText={this.context.token ? 'Book' : 'none'}
                   >
                     <h1>{this.state.selectedEvent.title}</h1>
                     <h2>
