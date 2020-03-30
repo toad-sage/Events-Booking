@@ -23,9 +23,8 @@ class EventsPage extends Component {
         this.priceElRef = React.createRef();
         this.dateElRef = React.createRef();
         this.descriptionElRef = React.createRef();
+        this.isActive = true;
     }
-
-    isActive = true;
 
     static contextType = AuthContext;
 
@@ -58,8 +57,8 @@ class EventsPage extends Component {
             
           const requestBody = {
               query: `
-              mutation {
-                createEvent(eventInput: {title: "${title}", description: "${description}", price: ${price}, date: "${date}"}) {
+              mutation CreateEvent($title: String! ,$description: String!,$price: Float!,$date: String!){
+                createEvent(eventInput: {title: $title, description: $description, price: $price, date: $date}) {
                   _id
                   title
                   description
@@ -67,7 +66,8 @@ class EventsPage extends Component {
                   price
                 }
               }
-              `
+              `,
+              variables: event
           }
 
           const token = this.context.token;
@@ -150,6 +150,8 @@ class EventsPage extends Component {
             return res.json();
           })
           .then(resData => {
+              console.log(resData)
+              console.log(this.isActive)
               const events = resData.data.events;
               if(this.isActive)
               this.setState({ events: events , isLoading: false });
@@ -177,14 +179,17 @@ class EventsPage extends Component {
 
           const requestBody = {
             query: `
-              mutation {
-                bookEvent(eventId: "${this.state.selectedEvent._id}"){
+              mutation BookEvent($id: ID!){
+                bookEvent(eventId: $id){
                   _id
                   createdAt
                   updatedAt
                 }
               }
-            `
+            `,
+            variables: {
+              id: this.state.selectedEvent._id
+            }
           }
 
           console.log(requestBody.query)
@@ -212,7 +217,7 @@ class EventsPage extends Component {
           });
       }
 
-      componentWillMount(){
+      componentWillUnmount(){
         this.isActive = false;
       }
 
