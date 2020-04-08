@@ -1,7 +1,0 @@
-{
-    "env": {
-        "MONGO_USER":"ruffle",
-        "MONGO_PASSWORD":"10qpalzm",
-        "MONGO_DB":"events-react"
-    }
-}
